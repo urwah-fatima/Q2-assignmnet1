@@ -1,14 +1,11 @@
-// component named country_name that takes a params object as a prop. This object contains country_name, population, and capital_city properties.
-export default function country_name({
-  params,
-}: {
-  params: {
-    country_name: string;
-    population: number | string;
-    capital_city: string;
-  };
-}) {
-  // countries object is defined, containing information about five countries: Pakistan, Iran, China, India, and Bangladesh. Each country has properties for name, population, and capital.
+"use client"; // Mark this as a client component
+
+import { useParams } from "next/navigation";
+
+export default function CountryName() {
+  const params = useParams(); // Get the dynamic route parameters
+  const country_name = params?.["country-name"]; // Access the route segment
+  
   const countries = {
     pakistan: {
       name: "Pakistan",
@@ -28,7 +25,7 @@ export default function country_name({
     india: {
       name: "India",
       population: "1.417 billion",
-      capital: "New Dehli",
+      capital: "New Delhi",
     },
     bangladesh: {
       name: "Bangladesh",
@@ -36,24 +33,22 @@ export default function country_name({
       capital: "Dhaka",
     },
   };
-  // Getting the country key from params and converting it to lowercase
-  const countryKey = params.country_name.toLowerCase();
 
-  // Attempt to retrieve the country details using the countryKey from the countries object.
-  // `keyof typeof countries` is used to ensure TypeScript knows that `countryKey` is a valid key for the countries object.
-  const country = countries[countryKey as keyof typeof countries]; 
+  // Ensure the country_name is lowercase and defined before accessing the countries object
+  const countryKey = country_name?.toString().toLowerCase();
 
-  // If the country exists in the `countries` object, the `countryDetails` object is populated with the country information.
-  // Otherwise, it provides a default message saying "Sorry, we do not have data for this country".
+  // Retrieve the country details using the countryKey, or return a default value if not found
+  const country = countryKey && countries[countryKey as keyof typeof countries];
+
   const countryDetails = country
     ? {
-        name: country.name, // If found, display the country's name.
-        population: country.population, // If found, display the country's population
-        capital: country.capital, // If found, display the country's capital
+        name: country.name,
+        population: country.population,
+        capital: country.capital,
       }
     : {
         name: "Country not found",
-        polpulation: "Country not found",
+        population: "Country not found",
         capital: "Country not found",
       };
 
@@ -64,12 +59,10 @@ export default function country_name({
       </h1>
       <p>Country name: {countryDetails.name}</p>
       <p>
-        Population:{" "}
-        <span style={{ color: "red" }}>{countryDetails.population}</span>
+        Population: <span style={{ color: "red" }}>{countryDetails.population}</span>
       </p>
       <p>
-        Capital city:{" "}
-        <span style={{ color: "red" }}>{countryDetails.capital}</span>
+        Capital city: <span style={{ color: "red" }}>{countryDetails.capital}</span>
       </p>
     </div>
   );
